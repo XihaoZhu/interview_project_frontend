@@ -24,28 +24,37 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 
-const locales = {
-  "en-GB": enGB,
-};
 
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
 
-const DnDCalendar = withDragAndDrop<CalendarEvent>(Calendar)
-
-// react-big-calendar 需要的事件结构
+// type claim for react-big-calendar
 interface CalendarEvent extends RBCEvent {
   id: number;
+  title: string;
   start: Date;
   end: Date;
 }
 
 function App() {
+  
+  // When render the page first time, get the local timezone automatically
+  const [timezone,setTimeZone] = useState('UTC');
+  useEffect(() => {
+    const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimeZone(browserTZ);
+  }, []);
+
+  const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales: {"en-GB": enGB}, 
+  });
+
+const DnDCalendar = withDragAndDrop<CalendarEvent>(Calendar)
+
+
+  
   const dispatch = useDispatch();
   const events = useSelector((state: RootState) => state.events.list);
 
@@ -110,11 +119,10 @@ function App() {
   }));
 
   return (
-    <div className="h-full p-4">
-      <h1 className="text-2xl font-bold mb-4">My Calendar</h1>
+    <div className="h-5/6 p-4 justify-items-center justify-self-center content-center">
+      <h1 className="text-2xl font-bold mb-4">Nick Calendar</h1>
       <DnDCalendar
 
-        className="h-[70vh]"
         localizer={localizer}
         events={calendarEvents}
         startAccessor={(event:CalendarEvent) => event.start}
@@ -133,6 +141,26 @@ function App() {
         onView={(view) => setCurrentView(view as any)}
         popup
         showMultiDayTimes
+
+        // 👇 关键：拖拽后更新 Redux
+        onEventDrop={({ event, start, end }) => {
+          const updatedEvent = {
+            ...events.find(e => e.id === event.id)!,
+            start_time: (start instanceof Date ? start : new Date(start)).toISOString(),
+            end_time: (end instanceof Date ? end : new Date(end)).toISOString(),
+          };
+          dispatch(setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e)));
+        }}
+      
+        // 👇 关键：resize 后更新 Redux
+        onEventResize={({ event, start, end }) => {
+          const updatedEvent = {
+            ...events.find(e => e.id === event.id)!,
+            start_time: (start instanceof Date ? start : new Date(start)).toISOString(),
+            end_time: (end instanceof Date ? end : new Date(end)).toISOString(),
+          };
+          dispatch(setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e)));
+        }}
       />
     </div>
   );
