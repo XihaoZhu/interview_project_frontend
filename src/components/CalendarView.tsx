@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store";
 import {
@@ -21,6 +21,8 @@ import { getDay } from "date-fns/getDay";
 import { enGB } from "date-fns/locale/en-GB";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 
 const locales = {
   "en-GB": enGB,
@@ -34,14 +36,21 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const DnDCalendar = withDragAndDrop<CalendarEvent>(Calendar)
+
 // react-big-calendar 需要的事件结构
 interface CalendarEvent extends RBCEvent {
   id: number;
+  start: Date;
+  end: Date;
 }
 
 function App() {
   const dispatch = useDispatch();
   const events = useSelector((state: RootState) => state.events.list);
+
+  const [currentView, setCurrentView] = useState<"month" | "week" | "day" | "agenda">("month");
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   // 模拟初始数据
   useEffect(() => {
@@ -103,18 +112,25 @@ function App() {
   return (
     <div className="h-full p-4">
       <h1 className="text-2xl font-bold mb-4">My Calendar</h1>
-      <Calendar
+      <DnDCalendar
+
         className="h-[70vh]"
         localizer={localizer}
         events={calendarEvents}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor={(event:CalendarEvent) => event.start}
+        endAccessor={(event:CalendarEvent) => event.end}
         selectable
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
 
-        views={["month", "week", "day", "agenda"]}
+        views={["month", "week", "day"]}
         defaultView="month"
+        view={currentView}
+
+        date={currentDate}
+        onNavigate={(date) => setCurrentDate(date)}
+
+        onView={(view) => setCurrentView(view as any)}
         popup
         showMultiDayTimes
       />
