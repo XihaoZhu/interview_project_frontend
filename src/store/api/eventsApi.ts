@@ -1,18 +1,45 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { Event, EventException } from "../typeAnnotation/types";
+import {type MyEvent} from "../typeAnnotation/types";
+import { parseISO } from "date-fns";
 
-const defaultApiUrl="http://localhost:8000/events/";
-
-
+const defaultApiUrl="http://127.0.0.1:8000/api/events/";
 
 
 // fetch events and exceptions
-export const fetchEvents = createAsyncThunk("events/fetch", async () => {
-  const res = await fetch(defaultApiUrl + "events/");
+export const fetchEvents = createAsyncThunk("events/fetch", async (
+  query?: { start: string; end: string; timezone: string ;type?: string }
+) => {
+  let url = defaultApiUrl + "events/";
+  
+  if (query) {
+      const params = new URLSearchParams();
+      params.append("start", query.start);
+      params.append("end", query.end);
+      params.append("timezone", query.timezone);
+      query.type && params.append("type", query.type);
+      url += "?" + params.toString();
+    }
+  
+  const res = await fetch(url);
+
   if (!res.ok) {
         throw new Error(`Request failed: ${res.status}`);
         }
-  return await res.json();
+  const data = await res.json();
+  const transformed: MyEvent[] = data.map((ev: any) => ({
+    id: ev.id,
+    title: ev.title,
+    start: parseISO(ev.start_time),
+    end: parseISO(ev.end_time),
+    type: ev.type,
+    link: ev.link ?? null,
+    note: ev.note ?? "",
+    extra_info: ev.extra_info ?? "",
+  }));
+
+  console.log("Fetched events:", transformed);
+  return transformed;
 });
 
 // create event

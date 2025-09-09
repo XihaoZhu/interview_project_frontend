@@ -8,9 +8,10 @@ import {
   updateException
 } from "../api/eventsApi";
 import type { Event, EventException } from "../typeAnnotation/types";
+import type { MyEvent } from "../typeAnnotation/types";
 
 interface EventsState {
-  events: Event[];
+  events: MyEvent[];
   exceptions: EventException[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
@@ -35,7 +36,7 @@ const eventsSlice = createSlice({
       })
       .addCase(fetchEvents.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.events = action.payload;
+        state.events = action.payload;;
       })
       .addCase(fetchEvents.rejected, (state, action) => {
         state.status = "failed";

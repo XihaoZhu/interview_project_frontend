@@ -6,7 +6,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
 import { setSelectedDate, setSelectedEvent } from "../../store/slices/frontEndSlice";
+import { type MyEvent } from "../../store/typeAnnotation/types";
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 
+
+const DnDCalendar = withDragAndDrop(Calendar);
 
 // for date-fns localization (default is en-GB)
 const locales = {
@@ -21,51 +25,30 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-
-// define event type
-interface MyEvent {
-  title: string;
-  start: Date;
-  end: Date;
-}
-
-// test cases
-const initialEvents: MyEvent[] = [
-  {
-    title: "Meeting with team",
-    start: new Date(2025, 8, 9, 10, 0),
-    end: new Date(2025, 8, 9, 11, 0),
-  },
-  {
-    title: "Lunch with Sarah",
-    start: new Date(2025, 8, 10, 12, 0),
-    end: new Date(2025, 8, 10, 13, 0),
-  },
-];
-
 export const DayonlyCalendar: React.FC = ({}) => {
 
   // get store and actions
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
   const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
+  const leftSideView = useSelector((state: RootState) => state.frontend.leftSideView);
+  const events = useSelector((state: RootState) => state.events.events);
   const dispatch = useDispatch();
 
-  const [events, setEvents] = useState<MyEvent[]>(initialEvents);
 
-  return (
-    <div className="h-full p-4">
-      <Calendar
-        date={selectedDate!}
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: "100%" }}
-        selectable
-        defaultView="day"
-        views={['day']}
-      />
-    </div>
+  return(
+      <div className="h-full p-4">
+        <DnDCalendar
+          date={selectedDate!}
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%" }}
+          selectable
+          defaultView="day"
+          views={["day"]}
+        />
+      </div>
   );
 };
 

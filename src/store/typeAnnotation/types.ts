@@ -34,3 +34,15 @@ export interface Event {
   repeat_rule?: string | null;
   parent?: number | null;
 }
+
+// frontend event type
+export interface MyEvent {
+  id: number;
+  title: string;
+  start: Date;
+  end: Date;
+  type?: "meeting" | "event" | "first_appointment" | "presentation";
+  link?: string | null;
+  note?: string;
+  extra_info?: string | null;
+}
