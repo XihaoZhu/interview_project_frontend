@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from "react";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay, set } from "date-fns";
+import React, { useState } from "react";
+import { Calendar, dateFnsLocalizer} from "react-big-calendar";
+import { format, parse, startOfWeek, getDay} from "date-fns";
 import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
 import { setSelectedDate, setSelectedEvent } from "../../store/slices/frontEndSlice";
+
 
 // for date-fns localization (default is en-GB)
 const locales = {
@@ -19,6 +20,7 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+
 
 // define event type
 interface MyEvent {
@@ -41,36 +43,30 @@ const initialEvents: MyEvent[] = [
   },
 ];
 
-export const RegularCalendar: React.FC= ({}) => {
+export const DayonlyCalendar: React.FC = ({}) => {
 
   // get store and actions
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
   const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
   const dispatch = useDispatch();
 
-
   const [events, setEvents] = useState<MyEvent[]>(initialEvents);
-
-  const {defaultDate} = useMemo(() => ({
-    defaultDate: new Date(Date.now())
-    }), [])
 
   return (
     <div className="h-full p-4">
       <Calendar
+        date={selectedDate!}
         localizer={localizer}
         events={events}
-        defaultDate={selectedDate || defaultDate}
         startAccessor="start"
         endAccessor="end"
         style={{ height: "100%" }}
-        selectable 
-        onSelectSlot={(slotInfo) =>{
-          dispatch(setSelectedDate(slotInfo.start));
-        }}
+        selectable
+        defaultView="day"
+        views={['day']}
       />
     </div>
   );
 };
 
-export default RegularCalendar;
+export default DayonlyCalendar;
