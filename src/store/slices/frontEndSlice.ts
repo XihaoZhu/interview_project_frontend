@@ -36,6 +36,6 @@ export const frontEndSlice = createSlice({
   },
 });
 
-export const { setSelectedDate, setSelectedEvent, setLeftSideView } = frontEndSlice.actions;
+export const { setSelectedDate, setSelectedEvent, setLeftSideView, setTimezone } = frontEndSlice.actions;
 
 export default frontEndSlice.reducer;

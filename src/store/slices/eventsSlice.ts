@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 import {
   fetchEvents,
   addEvent,
@@ -9,6 +9,8 @@ import {
 } from "../api/eventsApi";
 import type { Event, EventException } from "../typeAnnotation/types";
 import type { MyEvent } from "../typeAnnotation/types";
+import { type RootState } from "../index";
+import { toZonedTime } from "date-fns-tz";
 
 interface EventsState {
   events: MyEvent[];
@@ -78,5 +80,18 @@ const eventsSlice = createSlice({
     });
   }
 });
+
+export const selectRawEvents = (state: RootState) => state.events.events;
+
+// tiemzone selector
+export const makeSelectEventsWithTimezone = (timezone: string) =>
+  createSelector([selectRawEvents], (events) =>
+    events.map((ev) => ({
+      ...ev,
+      start: toZonedTime(ev.start, timezone),
+      end: toZonedTime(ev.end, timezone),
+    }))
+  );
+
 
 export default eventsSlice.reducer;

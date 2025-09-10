@@ -2,13 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { Event, EventException } from "../typeAnnotation/types";
 import {type MyEvent} from "../typeAnnotation/types";
 import { parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 const defaultApiUrl="http://127.0.0.1:8000/api/events/";
 
 
 // fetch events and exceptions
 export const fetchEvents = createAsyncThunk("events/fetch", async (
-  query?: { start: string; end: string; timezone: string ;type?: string }
+  query: { start: string; end: string; timezone: string ;type?: string }
 ) => {
   let url = defaultApiUrl + "events/";
   
@@ -38,7 +39,6 @@ export const fetchEvents = createAsyncThunk("events/fetch", async (
     extra_info: ev.extra_info ?? "",
   }));
 
-  console.log("Fetched events:", transformed);
   return transformed;
 });
 

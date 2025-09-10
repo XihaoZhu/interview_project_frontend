@@ -5,8 +5,10 @@ import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
-import { setSelectedDate, setSelectedEvent, setLeftSideView } from "../../store/slices/frontEndSlice";
+import { setSelectedDate, setSelectedEvent, setLeftSideView, } from "../../store/slices/frontEndSlice";
+import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";  
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+
 
 
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -29,7 +31,8 @@ export const RegularCalendar: React.FC= ({}) => {
   // get store and actions
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
   const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
-  const events= useSelector((state: RootState) => state.events.events);
+  const timezone = useSelector((state: RootState) => state.frontend.timezone);
+  const events= useSelector(makeSelectEventsWithTimezone(timezone!));
   const [currentView, setCurrentView] = useState<"month" | "week" | "day">("month");
   const dispatch = useDispatch();
 

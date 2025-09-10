@@ -5,6 +5,7 @@ import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
+import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
 import { setSelectedDate, setSelectedEvent } from "../../store/slices/frontEndSlice";
 import { type MyEvent } from "../../store/typeAnnotation/types";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
@@ -31,7 +32,8 @@ export const DayonlyCalendar: React.FC = ({}) => {
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
   const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
   const leftSideView = useSelector((state: RootState) => state.frontend.leftSideView);
-  const events = useSelector((state: RootState) => state.events.events);
+  const timezone = useSelector((state: RootState) => state.frontend.timezone);
+  const events= useSelector(makeSelectEventsWithTimezone(timezone!));
   const dispatch = useDispatch();
 
 
