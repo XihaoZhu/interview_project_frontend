@@ -19,7 +19,8 @@ export interface EventException {
 
 // event type
 export interface Event {
-  id: number;
+  id?: number;
+  sub_id?: number;
   title: string;
   link?: string | null;
   note?: string;
@@ -37,12 +38,16 @@ export interface Event {
 
 // frontend event type
 export interface MyEvent {
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
+  id: number | null;
+  sub_id?: number | null;
+  title: string | null;
+  start: Date | null;
+  end: Date | null;
   type?: "meeting" | "event" | "first_appointment" | "presentation";
   link?: string | null;
-  note?: string;
+  note?: string | null;
+  repeat_rule?: string | null;
+  parent?: number | null;
   extra_info?: string | null;
+  action_type?: "add regular" | "add exception" | "update regular" | "delete regular" | "update exception";
 }

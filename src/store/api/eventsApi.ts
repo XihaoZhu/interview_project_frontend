@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { Event, EventException } from "../typeAnnotation/types";
 import {type MyEvent} from "../typeAnnotation/types";
-import { parseISO } from "date-fns";
+import { parseISO, sub } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
 const defaultApiUrl="http://127.0.0.1:8000/api/events/";
@@ -29,7 +29,9 @@ export const fetchEvents = createAsyncThunk("events/fetch", async (
         }
   const data = await res.json();
   const transformed: MyEvent[] = data.map((ev: any) => ({
-    id: ev.id,
+    id: ev.id ?? null,
+    sub_id: ev.sub_id ?? null,
+    parent: ev.mother_id ?? null,
     title: ev.title,
     start: parseISO(ev.start_time),
     end: parseISO(ev.end_time),

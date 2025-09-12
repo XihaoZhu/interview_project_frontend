@@ -2,7 +2,7 @@
 import { Provider } from 'react-redux';
 import { store } from './store';
 import { BrowserRouter , Route, Routes} from 'react-router-dom';
-import { IncreaseForm } from './components/From/Forms';
+import { FormTest} from './pages/formTestPage/FormTest';
 import { CalendarPage } from './pages/calendarPage/Calendar';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<CalendarPage />} />
-          <Route path="/test" element={<IncreaseForm />} />
+          <Route path="/test" element={<FormTest />} />
         </Routes>
       </BrowserRouter>
     </Provider>
