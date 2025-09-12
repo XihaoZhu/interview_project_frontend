@@ -65,7 +65,7 @@ export function EventForm({ initialData }: EventFormProps) {
     const type = watch("type",)
 
     useEffect(() => {
-        resetField("extra_info") // 或者 setValue("extra_info", "")
+        resetField("extra_info")
     }, [type, resetField])
 
     const typeLabelMap: Record<string, string> = {
@@ -77,7 +77,7 @@ export function EventForm({ initialData }: EventFormProps) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-2 border p-4 rounded-md w-80 bg-white/30 backdrop-blur-md border border-white/30 rounded-lg shadow-lg">
+            <div className="flex flex-col gap-2 border p-4 rounded-md w-80 bg-white/30 backdrop-blur-lg border border-white/30 rounded-lg shadow-lg">
                 {/* Title */}
                 <label className="flex justify-between items-center">
                     <span>Title*</span>

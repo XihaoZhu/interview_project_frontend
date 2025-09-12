@@ -9,7 +9,6 @@ import { setSelectedDate, setSelectedEvent, setLeftSideView, } from "../../store
 import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import type { MyEvent } from "../../store/typeAnnotation/types";
-import { Popover } from "@radix-ui/react-popover";
 import { RegularPopOverForm } from "@/pages/formPage/FormPage";
 
 
