@@ -88,8 +88,8 @@ export const makeSelectEventsWithTimezone = (timezone: string) =>
   createSelector([selectRawEvents], (events) =>
     events.map((ev) => ({
       ...ev,
-      start: toZonedTime(ev.start, timezone),
-      end: toZonedTime(ev.end, timezone),
+      start: toZonedTime(ev.start!, timezone),
+      end: toZonedTime(ev.end!, timezone),
     }))
   );
 
