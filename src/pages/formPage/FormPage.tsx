@@ -1,48 +1,55 @@
 import type { FC } from "react";
 import { EventForm } from "../../components/From/Forms";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent } from "@/components/ui/popover";
 import { useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { format } from "date-fns"
 
-import { useRef } from "react";
-
 
 interface RegularPopOverFormProps {
-  anchorRect: DOMRect | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  anchorEl?: HTMLElement | null;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const RegularPopOverForm: FC<RegularPopOverFormProps> = ({ anchorRect, open, onOpenChange }: RegularPopOverFormProps) => {
-  const triggerRef = useRef<HTMLDivElement>(null);
+export const RegularPopOverForm: FC<RegularPopOverFormProps> = ({
+  anchorEl,
+
+  open,
+  onOpenChange,
+}) => {
+  const [offset, setOffset] = useState(0);
   const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
 
-  const triggerStyle = anchorRect
-    ? {
-      position: "absolute",
-      top: anchorRect.top + window.scrollY,
-      left: anchorRect.left + window.scrollX,
-      width: anchorRect.width,
-      height: anchorRect.height,
-    }
-    : { position: "absolute", top: 0, left: 0, width: 0, height: 0 };
 
+  // cause my location for popover relies on anchorEl's width, so need to update it when window resize
+  useLayoutEffect(() => {
+    function updateOffset() {
+      if (anchorEl) {
+        setOffset(anchorEl.offsetWidth / 2);
+      }
+    }
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    return () => window.removeEventListener("resize", updateOffset);
+  }, [anchorEl]);
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild style={triggerStyle as React.CSSProperties}>
-        <div ref={triggerRef} />
-      </PopoverTrigger>
       <PopoverContent
-        className="bg-transparent border-none shadow-none p-0 w-80 h-100"
+        className=""
+        side="left"
         align="start"
-        side="bottom"
-        sideOffset={8}
+        sideOffset={offset}
         collisionPadding={8}
         avoidCollisions
-        onOpenAutoFocus={(event) => event.preventDefault()}
+
+        style={{
+          position: "absolute",
+          top: anchorEl ? anchorEl.getBoundingClientRect().top + window.scrollY : 0,
+          left: anchorEl ? anchorEl.getBoundingClientRect().left + window.scrollX : 0,
+        }}
       >
         {selectedEvent && selectedEvent.start && selectedEvent.end && (
           <EventForm initialData={{
