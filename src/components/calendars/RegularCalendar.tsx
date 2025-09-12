@@ -41,12 +41,11 @@ export const RegularCalendar: React.FC = ({ }) => {
 
   // for popover form control
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [popoverRect, setPopoverRect] = useState<DOMRect | null>(null);
 
   // For popover form
-  function handleEventClick(event: MyEvent, e: React.MouseEvent<HTMLDivElement>) {
-    setAnchorEl(e.currentTarget);
-    dispatch(dispatch(setSelectedEvent(event)));
+  function handleEventClick(eventInfo: any) {
+    setPopoverRect(eventInfo.el?.getBoundingClientRect() || null);
     setPopoverOpen(true);
   }
 
@@ -72,11 +71,12 @@ export const RegularCalendar: React.FC = ({ }) => {
         onSelectSlot={(slotInfo) => {
           dispatch(setSelectedDate(slotInfo.start));
         }}
-        onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
+        onSelectEvent={(event) => handleEventClick(event as MyEvent)}
       />
     </div>
     <div>
-      <RegularPopOverForm anchorEl={anchorEl}
+      <RegularPopOverForm
+        anchorRect={popoverRect}
         open={popoverOpen}
         onOpenChange={setPopoverOpen} />
     </div>
