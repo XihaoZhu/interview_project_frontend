@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { Event } from "../typeAnnotation/types";   
 import type { MyEvent } from "../typeAnnotation/types";
-import { set } from "date-fns";
 
 interface CalendarState {
   selectedDate: string | null;
@@ -12,7 +10,7 @@ interface CalendarState {
 
 const initialState: CalendarState = {
   selectedDate: new Date().toISOString(),
-  selectedEvent:null,
+  selectedEvent: null,
   leftSideView: "month",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 };

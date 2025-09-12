@@ -1,8 +1,8 @@
 
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { BrowserRouter , Route, Routes} from 'react-router-dom';
-import { FormTest} from './pages/formTestPage/FormTest';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { RegularPopOverForm } from './pages/formPage/FormPage';
 import { CalendarPage } from './pages/calendarPage/Calendar';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<CalendarPage />} />
-          <Route path="/test" element={<FormTest />} />
+          <Route path="/test" element={<RegularPopOverForm />} />
         </Routes>
       </BrowserRouter>
     </Provider>

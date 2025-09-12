@@ -1,7 +1,7 @@
 // exception type
 export interface EventException {
   sub_id: number;
-  event: number; 
+  event: number;
   occurrence_time: string;
   exception_type: "skip" | "modify";
 
@@ -25,7 +25,7 @@ export interface Event {
   link?: string | null;
   note?: string;
   extra_info?: string | null;
-  start_time: string;   
+  start_time: string;
   end_time: string;
   buid_timeZone: string;
   created_at: string;
@@ -41,8 +41,8 @@ export interface MyEvent {
   id: number | null;
   sub_id?: number | null;
   title: string | null;
-  start: Date | null;
-  end: Date | null;
+  start: string | null;
+  end: string | null;
   type?: "meeting" | "event" | "first_appointment" | "presentation";
   link?: string | null;
   note?: string | null;
