@@ -7,14 +7,14 @@ import {
   addException,
   updateException
 } from "../api/eventsApi";
-import type { Event, EventException } from "../typeAnnotation/types";
+import type { Event } from "../typeAnnotation/types";
 import type { MyEvent } from "../typeAnnotation/types";
 import { type RootState } from "../index";
 import { toZonedTime } from "date-fns-tz";
 
 interface EventsState {
   events: MyEvent[];
-  exceptions: EventException[];
+  exceptions: MyEvent[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }

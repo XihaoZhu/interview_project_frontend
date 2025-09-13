@@ -1,21 +1,3 @@
-// exception type
-export interface EventException {
-  sub_id: number;
-  event: number;
-  occurrence_time: string;
-  exception_type: "skip" | "modify";
-
-  new_start_time?: string | null;
-  new_end_time?: string | null;
-  new_title?: string | null;
-  new_description?: string | null;
-  new_link?: string | null;
-  new_extra_info?: string | null;
-  new_note?: string | null;
-  new_type?: "meeting" | "event" | "first time appointment" | "presentation" | null;
-
-  modified_at: string;
-}
 
 // event type
 export interface Event {
@@ -31,7 +13,7 @@ export interface Event {
   created_at: string;
   updated_at: string;
   type: "meeting" | "event" | "first_appointment" | "presentation";
-
+  occurrence_time?: string,
   repeat_rule?: string | null;
   parent?: number | null;
 }
@@ -49,5 +31,25 @@ export interface MyEvent {
   repeat_rule?: string | null;
   parent?: number | null;
   extra_info?: string | null;
-  action_type?: "add regular" | "add exception" | "update regular" | "delete regular" | "update exception";
+  apply_range?: "This time" | "This and future" | "All time"
+  occurrence_time?: string | null
+  action_type?: "save" | "delete" | null
+}
+
+export function mapEventToBackend(event: MyEvent) {
+  return {
+    mother_id: event.parent!,
+    occurrence_time: event.occurrence_time ?? event.start,
+    exception_type: event.action_type === "delete" ? "modify" : "skip",
+    action_type: event.action_type,
+    new_start_time: event.start ? new Date(event.start).toISOString() : null,
+    new_end_time: event.end ? new Date(event.end).toISOString() : null,
+    new_title: event.title ?? null,
+    new_description: event.note ?? null,
+    new_link: event.link ?? null,
+    new_extra_info: event.extra_info ?? null,
+    new_note: event.note ?? null,
+    new_type: event.type ?? null,
+    apply_range: event.apply_range ?? "This time",
+  };
 }

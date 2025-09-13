@@ -2,7 +2,7 @@
 import { Provider } from 'react-redux';
 import { store } from './store';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { RegularPopOverForm } from './pages/formPage/FormPage';
+import { RegularPopOverForm } from './components/From/PopOverForm';
 import { CalendarPage } from './pages/calendarPage/Calendar';
 
 function App() {

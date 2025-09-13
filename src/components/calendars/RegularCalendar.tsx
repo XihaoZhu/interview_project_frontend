@@ -9,10 +9,10 @@ import { setSelectedDate, setSelectedEvent, setLeftSideView, } from "../../store
 import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import type { MyEvent } from "../../store/typeAnnotation/types";
-import { RegularPopOverForm } from "@/pages/formPage/FormPage";
+import { RegularPopOverForm } from "@/components/From/PopOverForm";
 
 
-const DnDCalendar = withDragAndDrop(Calendar);
+const DnDCalendar = withDragAndDrop(Calendar)
 
 // for date-fns localization (default is en-GB)
 const locales = {
@@ -31,7 +31,6 @@ export const RegularCalendar: React.FC = ({ }) => {
 
   // get store and actions
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
-  const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent);
   const timezone = useSelector((state: RootState) => state.frontend.timezone);
   const events = useSelector(makeSelectEventsWithTimezone(timezone!));
   const [currentView, setCurrentView] = useState<"month" | "week" | "day">("month");
@@ -42,15 +41,39 @@ export const RegularCalendar: React.FC = ({ }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  // For popover form
+  // For popover form when click on event
   function handleEventClick(event: MyEvent, e: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(e.currentTarget);
     dispatch(dispatch(setSelectedEvent(event)));
     setPopoverOpen(true);
   }
 
+  // For popover form when making slot
+  function handleSelectSlot(slotInfo: any) {
+    dispatch(setSelectedEvent({ start: slotInfo.start, end: slotInfo.end }));
+
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+
+
   return (<>
     <div className="h-full p-4">
+      {/* @ts-expect-error */}
       <DnDCalendar
         localizer={localizer}
         events={events}
@@ -69,7 +92,9 @@ export const RegularCalendar: React.FC = ({ }) => {
         }}
         date={selectedDate!}
         onSelectSlot={(slotInfo) => {
-          dispatch(setSelectedDate(slotInfo.start));
+          if (slotInfo.action == "select") {
+            handleSelectSlot(slotInfo)
+          }
         }}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
       />

@@ -1,49 +1,28 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from "../../store";
-import { useEffect } from 'react';
-import { fetchEvents } from '../../store/api/eventsApi';
-import { startOfMonth, endOfMonth, format, subDays, addDays, set } from 'date-fns';
 import TimezoneSelect from 'react-timezone-select'
 import { setTimezone, } from '../../store/slices/frontEndSlice';
 import { RegularCalendar } from '../../components/calendars/RegularCalendar'
 import { DayonlyCalendar } from '../../components/calendars/DayonlyCalendar'
-
-
-
-// from selected date get month start and end date in ISO format
-function getMonthQuery(date: Date) {
-  const start = subDays(startOfMonth(date), 7);
-  const end = addDays(endOfMonth(date), 7);
-  return {
-    start: format(start, "yyyy-MM-dd").toString(),
-    end: format(end, "yyyy-MM-dd").toString(),
-  };
-}
+import { useFetchEvents } from '@/hooks/useFetchEvents';
 
 
 export function CalendarPage() {
 
+  const refreshEvents = useFetchEvents()
+
   // for responsive layout  
   const leftSideView = useSelector((state: RootState) => state.frontend.leftSideView);
-  const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
   const timezone = useSelector((state: RootState) => state.frontend.timezone);
 
   const dispatch: AppDispatch = useDispatch();
 
-  useEffect(() => {
-    if (!selectedDate) return;
-
-    const dateObj = new Date(selectedDate);
-    const query = getMonthQuery(dateObj);
-
-    dispatch(fetchEvents({ ...query, timezone: timezone! }));
-  }, [selectedDate, dispatch]);
-
+  refreshEvents
 
 
   return (
     <div className='w-screen justify-center h-screen items-center flex justify-items-between'>
-      <div className='h-full w-1/6 flex justify-start flex-col justify-items-start pt-14 items-start'>
+      <div className='h-full w-1/6 flex justify-start flex-col justify-items-start pt-4 items-start'>
         <TimezoneSelect
           className='z-50'
           value={timezone!}

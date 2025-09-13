@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
 import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
-import { RegularPopOverForm } from "@/pages/formPage/FormPage";
+import { RegularPopOverForm } from "@/components/From/PopOverForm";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import type { MyEvent } from "@/store/typeAnnotation/types";
 import { setSelectedEvent } from "../../store/slices/frontEndSlice";
@@ -49,6 +49,7 @@ export const DayonlyCalendar: React.FC = ({ }) => {
 
   return (<>
     <div className="h-full p-4">
+      {/* @ts-expect-error */}
       <DnDCalendar
         date={selectedDate!}
         localizer={localizer}

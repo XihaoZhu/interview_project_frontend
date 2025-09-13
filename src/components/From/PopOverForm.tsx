@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { EventForm } from "../../components/From/Forms";
+import { EventForm } from "./Forms";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -89,6 +89,7 @@ export const RegularPopOverForm: FC<RegularPopOverFormProps> = ({
               start: format(selectedEvent.start, "yyyy-MM-dd'T'HH:mm"),
               end: format(selectedEvent.end, "yyyy-MM-dd'T'HH:mm"),
             }}
+            onOpenChange={onOpenChange}
           />
         )}
       </PopoverContent>
