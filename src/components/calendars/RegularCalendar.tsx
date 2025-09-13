@@ -3,6 +3,7 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay, set } from "date-fns";
 import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
 import { setSelectedDate, setSelectedEvent, setLeftSideView, } from "../../store/slices/frontEndSlice";
@@ -70,16 +71,32 @@ export const RegularCalendar: React.FC = ({ }) => {
   }
 
   // for popover form when dropping slot
-  function handleEventDrop({
-    event,
-    start,
-    end,
-  }: {
-    event: MyEvent;
-    start: String;
-    end: String;
-  }) {
+  function handleEventDrop(dropInfo: any) {
+    const { event, start, end } = dropInfo;
     dispatch(setSelectedEvent({ ...event, start, end }));
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+  // for popover form when resize
+  function handleEventResize(resizeInfo: any) {
+    const { event, start, end } = resizeInfo;
+
+    dispatch(setSelectedEvent({ ...event, start, end }));
+
     const mouseEvent = window.event as MouseEvent;
     if (!mouseEvent) return;
 
@@ -124,12 +141,17 @@ export const RegularCalendar: React.FC = ({ }) => {
           }
           dispatch(setSelectedDate(slotInfo.start))
         }}
+
         onEventDrop={(dropInfo) => {
           if (!dropInfo) return
-          {/* @ts-expect-error */ }
-          handleEventDrop({ event: dropInfo.event, start: dropInfo.start, end: dropInfo.end });
+          handleEventDrop(dropInfo);
         }}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
+
+        onEventResize={(resizeInfo) => {
+          if (!resizeInfo) return
+          handleEventResize(resizeInfo);
+        }}
       />
     </div>
     <div>

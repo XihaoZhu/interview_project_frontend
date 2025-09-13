@@ -40,7 +40,7 @@ export function mapEventToBackend(event: MyEvent) {
   return {
     mother_id: event.parent!,
     sub_id: event.sub_id,
-    occurrence_time: event.occurrence_time ?? event.start,
+    occurrence_time: event.occurrence_time,
     exception_type: (event.action_type == "delete") ? "skip" : "modify",
     action_type: event.action_type,
     new_start_time: event.start ? new Date(event.start).toISOString() : null,

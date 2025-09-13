@@ -57,10 +57,8 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
             ...data,
             start_time: new Date(data.start!).toISOString(),
             end_time: new Date(data.end!).toISOString(),
-            occurrence_time: data.occurrence_time ?? new Date(data.start!).toISOString(),
             buid_timeZone: timezone,
         };
-
         if (event.sub_id) {
             // if there is sub id, must be modify exception
             const exceptionPayload = { ...mapEventToBackend(event) }
@@ -76,7 +74,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
 
         } else if (event.parent) {
             // if there is no sub id but parent, then must be create exception
-            const exceptionPayload = { ...mapEventToBackend(event) }
+            const exceptionPayload = { ...mapEventToBackend(event), occurrence_time: event.occurrence_time }
             {/* @ts-expect-error */ }
             await dispatch(addException(exceptionPayload))
                 .unwrap()

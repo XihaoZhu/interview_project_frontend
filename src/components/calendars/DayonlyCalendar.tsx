@@ -3,6 +3,7 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState } from "../../store";
 import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
@@ -97,6 +98,31 @@ export const DayonlyCalendar: React.FC = ({ }) => {
     setPopoverOpen(true);
   }
 
+  // for popover form when resize
+  function handleEventResize(resizeInfo: any) {
+    const { event, start, end } = resizeInfo;
+
+    dispatch(setSelectedEvent({ ...event, start, end }));
+
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+
+
 
 
   return (<>
@@ -122,6 +148,10 @@ export const DayonlyCalendar: React.FC = ({ }) => {
           if (!dropInfo) return
           {/* @ts-expect-error */ }
           handleEventDrop({ event: dropInfo.event, start: dropInfo.start, end: dropInfo.end });
+        }}
+        onEventResize={(resizeInfo) => {
+          if (!resizeInfo) return
+          handleEventResize(resizeInfo);
         }}
       />
     </div>
