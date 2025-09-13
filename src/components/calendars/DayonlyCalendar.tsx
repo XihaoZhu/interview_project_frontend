@@ -46,6 +46,29 @@ export const DayonlyCalendar: React.FC = ({ }) => {
     setPopoverOpen(true);
   }
 
+  // For popover form when making slot
+  function handleSelectSlot(slotInfo: any) {
+    dispatch(setSelectedEvent({ start: slotInfo.start, end: slotInfo.end }));
+
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+
+
 
   return (<>
     <div className="h-full p-4">
@@ -61,6 +84,12 @@ export const DayonlyCalendar: React.FC = ({ }) => {
         defaultView="day"
         views={["day"]}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
+        onSelectSlot={(slotInfo) => {
+          if (slotInfo.action == "select") {
+            handleSelectSlot(slotInfo)
+          }
+        }
+        }
       />
     </div>
     <div>

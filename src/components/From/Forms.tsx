@@ -19,6 +19,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
         handleSubmit,
         reset,
         resetField,
+        setValue,
         watch,
         formState: { errors },
     } = useForm<MyEvent>({
@@ -63,7 +64,16 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
 
         if (event.sub_id) {
             // if there is sub id, must be modify exception
-
+            const exceptionPayload = { ...mapEventToBackend(event) }
+            {/* @ts-expect-error */ }
+            await dispatch(updateException(exceptionPayload))
+                .unwrap()
+                .then((res) => {
+                    console.log("Event modified:", res);
+                })
+                .catch((err) => {
+                    console.error("Failed to modify event:", err);
+                })
 
         } else if (event.parent) {
             // if there is no sub id but parent, then must be create exception
@@ -238,20 +248,22 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
                 <div className="flex justify-between">
                     <button
                         type="submit"
-                        {...register("action_type")}
-                        value="save"
-                        className="mt-2 !bg-blue-300 text-white rounded px-4 py-2 hover:!bg-blue-600 inline-block"
+                        onClick={() => setValue("action_type", "save")}
+                        className="mt-2 !bg-blue-300 text-white rounded px-4 py-2 hover:!bg-blue-600 inline-block flex-1"
                     >
                         Save Event
                     </button>
-                    <button
-                        type="submit"
-                        {...register("action_type")}
-                        value="delete"
-                        className="mt-2 !bg-red-300 text-white rounded px-4 py-2 hover:!bg-red-600 inline-block "
-                    >
-                        Delete Event
-                    </button>
+                    {
+                        (initialData?.id || initialData?.parent) && (
+                            <button
+                                type="submit"
+                                onClick={() => setValue("action_type", "delete")}
+                                className="mt-2 !bg-red-300 text-white rounded px-4 py-2 hover:!bg-red-600 inline-block flex-1"
+                            >
+                                Delete Event
+                            </button>
+                        )
+                    }
                 </div>
             </div>
         </form>

@@ -103,8 +103,8 @@ export const addException = createAsyncThunk(
 // update (or delete ) exception
 export const updateException = createAsyncThunk(
   "exceptions/update",
-  async (data: { exception_type: string, mother_id: number, occurrence_time: string } & Record<string, any>) => {
-    const res = await fetch(defaultApiUrl + `exceptions/${data.sub_id}`, {
+  async (data: { exception_type: string, sub_id: number, occurrence_time: string } & Record<string, any>) => {
+    const res = await fetch(defaultApiUrl + `exceptions/${data.sub_id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)

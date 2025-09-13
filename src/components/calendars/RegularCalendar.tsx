@@ -77,7 +77,6 @@ export const RegularCalendar: React.FC = ({ }) => {
       <DnDCalendar
         localizer={localizer}
         events={events}
-        defaultDate={selectedDate!}
         startAccessor="start"
         endAccessor="end"
         style={{ height: "100%" }}
@@ -95,6 +94,7 @@ export const RegularCalendar: React.FC = ({ }) => {
           if (slotInfo.action == "select") {
             handleSelectSlot(slotInfo)
           }
+          dispatch(setSelectedDate(slotInfo.start))
         }}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
       />
