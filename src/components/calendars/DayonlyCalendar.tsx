@@ -68,6 +68,35 @@ export const DayonlyCalendar: React.FC = ({ }) => {
     setPopoverOpen(true);
   }
 
+  // for popover form when dropping slot
+  function handleEventDrop({
+    event,
+    start,
+    end,
+  }: {
+    event: MyEvent;
+    start: String;
+    end: String;
+  }) {
+    dispatch(setSelectedEvent({ ...event, start, end }));
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+
 
 
   return (<>
@@ -88,8 +117,12 @@ export const DayonlyCalendar: React.FC = ({ }) => {
           if (slotInfo.action == "select") {
             handleSelectSlot(slotInfo)
           }
-        }
-        }
+        }}
+        onEventDrop={(dropInfo) => {
+          if (!dropInfo) return
+          {/* @ts-expect-error */ }
+          handleEventDrop({ event: dropInfo.event, start: dropInfo.start, end: dropInfo.end });
+        }}
       />
     </div>
     <div>

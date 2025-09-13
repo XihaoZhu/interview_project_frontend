@@ -11,7 +11,6 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import type { MyEvent } from "../../store/typeAnnotation/types";
 import { RegularPopOverForm } from "@/components/From/PopOverForm";
 
-
 const DnDCalendar = withDragAndDrop(Calendar)
 
 // for date-fns localization (default is en-GB)
@@ -70,6 +69,35 @@ export const RegularCalendar: React.FC = ({ }) => {
     setPopoverOpen(true);
   }
 
+  // for popover form when dropping slot
+  function handleEventDrop({
+    event,
+    start,
+    end,
+  }: {
+    event: MyEvent;
+    start: String;
+    end: String;
+  }) {
+    dispatch(setSelectedEvent({ ...event, start, end }));
+    const mouseEvent = window.event as MouseEvent;
+    if (!mouseEvent) return;
+
+    const virtualAnchor = {
+      getBoundingClientRect: () => ({
+        top: mouseEvent.clientY,
+        bottom: mouseEvent.clientY,
+        left: mouseEvent.clientX,
+        right: mouseEvent.clientX,
+        width: 0,
+        height: 0,
+      }),
+    } as HTMLElement;
+
+    setAnchorEl(virtualAnchor);
+    setPopoverOpen(true);
+  }
+
 
   return (<>
     <div className="h-full p-4">
@@ -95,6 +123,11 @@ export const RegularCalendar: React.FC = ({ }) => {
             handleSelectSlot(slotInfo)
           }
           dispatch(setSelectedDate(slotInfo.start))
+        }}
+        onEventDrop={(dropInfo) => {
+          if (!dropInfo) return
+          {/* @ts-expect-error */ }
+          handleEventDrop({ event: dropInfo.event, start: dropInfo.start, end: dropInfo.end });
         }}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
       />

@@ -1,7 +1,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { type MyEvent, mapEventToBackend } from "../../store/typeAnnotation/types"
 import { useEffect } from "react"
-import { addEvent, updateException, addException } from "@/store/api/eventsApi"
+import { addEvent, updateException, addException, updateEvent, deleteEvent } from "@/store/api/eventsApi"
 import { type AppDispatch } from "@/store"
 import { useDispatch, useSelector } from "react-redux"
 import { type RootState } from "@/store"
@@ -49,7 +49,6 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
 
     const refreshEvents = useFetchEvents()
 
-
     const dispatch: AppDispatch = useDispatch()
     const timezone = useSelector((state: RootState) => state.frontend.timezone)
 
@@ -89,8 +88,30 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
                 })
         } else if (event.id) {
             // no parent, single event modify
+            if (event.action_type == 'delete') {
+                {/* @ts-expect-error */ }
+                await dispatch(deleteEvent(event))
+                    .unwrap()
+                    .then((res) => {
+                        console.log("Event added:", res);
+                    })
+                    .catch((err) => {
+                        console.error("Failed to add event:", err);
+                    })
+            } else {
+                {/* @ts-expect-error */ }
+                await dispatch(updateEvent(event))
+                    .unwrap()
+                    .then((res) => {
+                        console.log("Event added:", res);
+                    })
+                    .catch((err) => {
+                        console.error("Failed to add event:", err);
+                    })
+            }
 
         } else {
+            // no parent no id, create new event
             await dispatch(addEvent(event))
                 .unwrap()
                 .then((res) => {
