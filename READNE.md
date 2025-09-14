@@ -17,7 +17,6 @@ As I don't have eough time, and the time transfer is working as expected. I'll k
 - Shortcut accessibility is not supported; I finished and tested all core function first and then check better to have. Don't have enought time for redo and undo. Need to store and handle too much extra data and take time. 
 Simple keyboard nav is okay, as it's built in with most regular HTML elements.
 - Only supports a single user scenario (no login/auth). As it's a interview project I think it's okay. For production line can just add access limit on backend, encybered account and password with generated token will be the first option I would use.
-- Exceptions logic prioritizes “This time” over other ranges; multiple “future” or “all time” exceptions do not stack. It's the first time I do a calendar project. I tried to accumulate the effects brought by all exceptions at the first place. But found the data structure doen't supply. If I really want to do in this way then I have to turn over the database.
 - Some mobile responsiveness is not well designed, but still it's there.
 
 ## What I’d Do Next With More Time
