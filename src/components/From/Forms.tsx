@@ -6,6 +6,7 @@ import { type AppDispatch } from "@/store"
 import { useDispatch, useSelector } from "react-redux"
 import { type RootState } from "@/store"
 import { useFetchEvents } from '@/hooks/useFetchEvents';
+import { fromZonedTime } from "date-fns-tz"
 
 interface EventFormProps {
     initialData?: Partial<MyEvent> | null
@@ -37,6 +38,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
             extra_info: "",
             apply_range: "This time",
             action_type: "save",
+            occurrence_time: "",
         },
     })
 
@@ -52,30 +54,23 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
     const dispatch: AppDispatch = useDispatch()
     const timezone = useSelector((state: RootState) => state.frontend.timezone)
 
+    const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     const onSubmit: SubmitHandler<MyEvent> = async (data) => {
+
         const event = {
             ...data,
-            start_time: new Date(data.start!).toISOString(),
-            end_time: new Date(data.end!).toISOString(),
+            start_time: fromZonedTime(data.start!, browserTimeZone),
+            end_time: fromZonedTime(data.end!, browserTimeZone),
             buid_timeZone: timezone,
         };
-        if (event.sub_id) {
-            // if there is sub id, must be modify exception
-            const exceptionPayload = { ...mapEventToBackend(event) }
-            {/* @ts-expect-error */ }
-            await dispatch(updateException(exceptionPayload))
-                .unwrap()
-                .then((res) => {
-                    console.log("Event modified:", res);
-                })
-                .catch((err) => {
-                    console.error("Failed to modify event:", err);
-                })
 
-        } else if (event.parent) {
+
+        // I used to build option to update Exception, but it's a mistake
+
+        if (event.parent) {
             // if there is no sub id but parent, then must be create exception
-            const exceptionPayload = { ...mapEventToBackend(event), occurrence_time: event.occurrence_time }
-            {/* @ts-expect-error */ }
+            const exceptionPayload = mapEventToBackend(event)
             await dispatch(addException(exceptionPayload))
                 .unwrap()
                 .then((res) => {
@@ -87,7 +82,6 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
         } else if (event.id) {
             // no parent, single event modify
             if (event.action_type == 'delete') {
-                {/* @ts-expect-error */ }
                 await dispatch(deleteEvent(event))
                     .unwrap()
                     .then((res) => {
@@ -97,7 +91,6 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
                         console.error("Failed to add event:", err);
                     })
             } else {
-                {/* @ts-expect-error */ }
                 await dispatch(updateEvent(event))
                     .unwrap()
                     .then((res) => {

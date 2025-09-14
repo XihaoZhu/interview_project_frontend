@@ -153,6 +153,39 @@ export const DayonlyCalendar: React.FC = ({ }) => {
           if (!resizeInfo) return
           handleEventResize(resizeInfo);
         }}
+
+
+        // style
+        eventPropGetter={(event: MyEvent) => {
+          let backgroundColor = "";
+          let color = "white"; // 默认文字颜色
+          switch (event.type) {
+            case "meeting":
+              backgroundColor = "#4ade80"; // 绿色系，清新
+              break;
+            case "event":
+              backgroundColor = "#60a5fa"; // 蓝色系，柔和
+              break;
+            case "first_appointment":
+              backgroundColor = "#facc15"; // 黄色系，温暖
+              color = "black"; // 黄色背景文字改黑色
+              break;
+            case "presentation":
+              backgroundColor = "#f472b6"; // 粉色系，柔和
+              break;
+            default:
+              backgroundColor = "#a1a1aa"; // 灰色，备用
+              break;
+          }
+          return {
+            style: {
+              backgroundColor,
+              color,
+              borderRadius: "6px",
+              border: "none",
+            },
+          };
+        }}
       />
     </div>
     <div>

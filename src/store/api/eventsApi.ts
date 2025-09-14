@@ -49,6 +49,7 @@ export const fetchEvents = createAsyncThunk("events/fetch", async (
 export const addEvent = createAsyncThunk(
   "events/create",
   async (data: MyEvent) => {
+
     const res = await fetch(defaultApiUrl + "events/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -64,7 +65,8 @@ export const addEvent = createAsyncThunk(
 // update event
 export const updateEvent = createAsyncThunk(
   "events/update",
-  async (data: Event) => {
+  async (data: MyEvent) => {
+
     const res = await fetch(defaultApiUrl + `modify_event/${data.id}/`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -77,7 +79,9 @@ export const updateEvent = createAsyncThunk(
   })
 
 // delete event
-export const deleteEvent = createAsyncThunk("events/delete", async (data: Event) => {
+export const deleteEvent = createAsyncThunk("events/delete", async (data: MyEvent) => {
+
+
   const res = await fetch(defaultApiUrl + `modify_event/${data.id}/`, { method: "DELETE" });
   if (!res.ok) {
     throw new Error(`Request failed: ${res.status}`);
@@ -88,7 +92,9 @@ export const deleteEvent = createAsyncThunk("events/delete", async (data: Event)
 // create exception
 export const addException = createAsyncThunk(
   "exceptions/create",
-  async (data: { exception_type: string, mother_id: number, occurrence_time: string } & Record<string, any>) => {
+  async (data: { exception_type: string, mother_id: number } & Record<string, any>) => {
+
+
     const res = await fetch(defaultApiUrl + "exceptions/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,6 +110,7 @@ export const addException = createAsyncThunk(
 export const updateException = createAsyncThunk(
   "exceptions/update",
   async (data: { exception_type: string, sub_id: number } & Record<string, any>) => {
+
     const res = await fetch(defaultApiUrl + `exceptions/${data.sub_id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

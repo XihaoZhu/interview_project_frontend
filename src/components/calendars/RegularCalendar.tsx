@@ -31,6 +31,7 @@ export const RegularCalendar: React.FC = ({ }) => {
 
   // get store and actions
   const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
+  const selectedEvent = useSelector((state: RootState) => state.frontend.selectedEvent)
   const timezone = useSelector((state: RootState) => state.frontend.timezone);
   const events = useSelector(makeSelectEventsWithTimezone(timezone!));
   const [currentView, setCurrentView] = useState<"month" | "week" | "day">("month");
@@ -44,12 +45,13 @@ export const RegularCalendar: React.FC = ({ }) => {
   // For popover form when click on event
   function handleEventClick(event: MyEvent, e: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(e.currentTarget);
-    dispatch(dispatch(setSelectedEvent(event)));
+    dispatch(setSelectedEvent(event));
     setPopoverOpen(true);
   }
 
   // For popover form when making slot
   function handleSelectSlot(slotInfo: any) {
+
     dispatch(setSelectedEvent({ start: slotInfo.start, end: slotInfo.end }));
 
     const mouseEvent = window.event as MouseEvent;
@@ -73,7 +75,8 @@ export const RegularCalendar: React.FC = ({ }) => {
   // for popover form when dropping slot
   function handleEventDrop(dropInfo: any) {
     const { event, start, end } = dropInfo;
-    dispatch(setSelectedEvent({ ...event, start, end }));
+    console.log(start)
+    dispatch(setSelectedEvent({ ...selectedEvent, ...event, start, end }));
     const mouseEvent = window.event as MouseEvent;
     if (!mouseEvent) return;
 
@@ -132,25 +135,63 @@ export const RegularCalendar: React.FC = ({ }) => {
         }}
         onView={(view) => {
           setCurrentView(view as "month" | "week" | "day");
-          dispatch(setLeftSideView(view as "month" | "week" | "day" | "agenda"));
+          dispatch(setLeftSideView(view as "month" | "week" | "day"));
         }}
+        views={["month", "week", "day"]}
         date={selectedDate!}
         onSelectSlot={(slotInfo) => {
           if (slotInfo.action == "select") {
             handleSelectSlot(slotInfo)
           }
-          dispatch(setSelectedDate(slotInfo.start))
+          if (selectedDate != slotInfo.start.toISOString()) {
+            dispatch(setSelectedDate(slotInfo.start))
+          }
         }}
 
         onEventDrop={(dropInfo) => {
           if (!dropInfo) return
+          setSelectedEvent(dropInfo.event)
           handleEventDrop(dropInfo);
         }}
         onSelectEvent={(event, e) => handleEventClick(event as MyEvent, e as any)}
 
         onEventResize={(resizeInfo) => {
           if (!resizeInfo) return
+          setSelectedEvent(resizeInfo.event)
           handleEventResize(resizeInfo);
+        }}
+
+
+        // style
+        eventPropGetter={(event: MyEvent) => {
+          let backgroundColor = "";
+          let color = "white"; // 默认文字颜色
+          switch (event.type) {
+            case "meeting":
+              backgroundColor = "#4ade80"; // 绿色系，清新
+              break;
+            case "event":
+              backgroundColor = "#60a5fa"; // 蓝色系，柔和
+              break;
+            case "first_appointment":
+              backgroundColor = "#facc15"; // 黄色系，温暖
+              color = "black"; // 黄色背景文字改黑色
+              break;
+            case "presentation":
+              backgroundColor = "#f472b6"; // 粉色系，柔和
+              break;
+            default:
+              backgroundColor = "#a1a1aa"; // 灰色，备用
+              break;
+          }
+          return {
+            style: {
+              backgroundColor,
+              color,
+              borderRadius: "6px",
+              border: "none",
+            },
+          };
         }}
       />
     </div>

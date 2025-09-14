@@ -18,16 +18,19 @@ export function useFetchEvents() {
     const dispatch: AppDispatch = useDispatch();
     const selectedDate = useSelector((state: RootState) => state.frontend.selectedDate);
     const timezone = useSelector((state: RootState) => state.frontend.timezone);
+    const typeFilter = useSelector((state: RootState) => state.frontend.typeFilter);
 
     const fetchEventsForCurrentDate = () => {
         if (!selectedDate || !timezone) return;
         const query = getMonthQuery(new Date(selectedDate));
-        dispatch(fetchEvents({ ...query, timezone }));
+        if (typeFilter) {
+            dispatch(fetchEvents({ ...query, timezone, type: typeFilter }));
+        } else { dispatch(fetchEvents({ ...query, timezone })); }
     };
 
     useEffect(() => {
         fetchEventsForCurrentDate()
-    }, [selectedDate, dispatch]);
+    }, [selectedDate]);
 
     return fetchEventsForCurrentDate
 }

@@ -6,6 +6,7 @@ interface CalendarState {
   selectedEvent: MyEvent | null;
   leftSideView: "month" | "week" | "day" | "agenda";
   timezone?: string;
+  typeFilter: '' | 'meeting' | 'presentation' | 'first_appointment' | 'event'
 }
 
 const initialState: CalendarState = {
@@ -13,6 +14,7 @@ const initialState: CalendarState = {
   selectedEvent: null,
   leftSideView: "month",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  typeFilter: ''
 };
 
 export const frontEndSlice = createSlice({
@@ -30,10 +32,13 @@ export const frontEndSlice = createSlice({
     },
     setTimezone: (state, action) => {
       state.timezone = action.payload;
+    },
+    setTypeFilter: (state, action) => {
+      state.typeFilter = action.payload;
     }
   },
 });
 
-export const { setSelectedDate, setSelectedEvent, setLeftSideView, setTimezone } = frontEndSlice.actions;
+export const { setSelectedDate, setSelectedEvent, setLeftSideView, setTimezone, setTypeFilter } = frontEndSlice.actions;
 
 export default frontEndSlice.reducer;

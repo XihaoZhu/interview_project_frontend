@@ -36,21 +36,20 @@ export interface MyEvent {
   action_type?: "save" | "delete" | null
 }
 
-export function mapEventToBackend(event: MyEvent) {
+export function mapEventToBackend(event: MyEvent & { start_time?: Date, end_time?: Date }) {
   return {
     mother_id: event.parent!,
-    sub_id: event.sub_id,
     occurrence_time: event.occurrence_time,
+    sub_id: event.sub_id,
     exception_type: (event.action_type == "delete") ? "skip" : "modify",
     action_type: event.action_type,
-    new_start_time: event.start ? new Date(event.start).toISOString() : null,
-    new_end_time: event.end ? new Date(event.end).toISOString() : null,
-    new_title: event.title ?? null,
-    new_description: event.note ?? null,
+    new_start_time: event.start_time,
+    new_end_time: event.end_time,
+    new_title: event.title,
     new_link: event.link ?? null,
     new_extra_info: event.extra_info ?? null,
     new_note: event.note ?? null,
-    new_type: event.type ?? null,
+    new_type: event.type,
     apply_range: event.apply_range ?? "This time",
   };
 }
