@@ -39,7 +39,8 @@ export const fetchEvents = createAsyncThunk("events/fetch", async (
     link: ev.link ?? null,
     note: ev.note ?? "",
     extra_info: ev.extra_info ?? "",
-    occurrence_time: ev.occurrence_time
+    occurrence_time: ev.occurrence_time,
+    this_time_ex: ev.this_time_ex,
   }));
 
   return transformed;

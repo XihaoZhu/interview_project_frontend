@@ -235,6 +235,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
                         <span>Apply range</span>
                         <select
                             {...register("apply_range")}
+                            disabled={initialData?.this_time_ex}
                             className="pl-2 border rounded px-2 py-1"
                         >
                             <option value="This time">This time</option>

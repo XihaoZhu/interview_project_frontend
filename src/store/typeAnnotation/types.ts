@@ -34,6 +34,7 @@ export interface MyEvent {
   apply_range?: "This time" | "This and future" | "All time"
   occurrence_time?: string | null
   action_type?: "save" | "delete" | null
+  this_time_ex: false | true
 }
 
 export function mapEventToBackend(event: MyEvent & { start_time?: Date, end_time?: Date }) {
