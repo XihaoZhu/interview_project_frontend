@@ -30,7 +30,7 @@ export function useFetchEvents() {
 
     useEffect(() => {
         fetchEventsForCurrentDate()
-    }, [selectedDate]);
+    }, [selectedDate, timezone]);
 
     return fetchEventsForCurrentDate
 }
