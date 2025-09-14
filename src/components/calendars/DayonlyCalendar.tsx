@@ -10,7 +10,7 @@ import { makeSelectEventsWithTimezone } from "../../store/slices/eventsSlice";
 import { RegularPopOverForm } from "@/components/From/PopOverForm";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import type { MyEvent } from "@/store/typeAnnotation/types";
-import { setSelectedEvent } from "../../store/slices/frontEndSlice";
+import { setSelectedEvent, setSelectedDate } from "../../store/slices/frontEndSlice";
 
 
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -129,6 +129,9 @@ export const DayonlyCalendar: React.FC = ({ }) => {
     <div className="h-full p-4">
       {/* @ts-expect-error */}
       <DnDCalendar
+        onNavigate={(newDate, view, action) => {
+          dispatch(setSelectedDate(newDate));
+        }}
         date={selectedDate!}
         localizer={localizer}
         events={events}
@@ -182,7 +185,6 @@ export const DayonlyCalendar: React.FC = ({ }) => {
               backgroundColor,
               color,
               borderRadius: "6px",
-              border: "none",
             },
           };
         }}

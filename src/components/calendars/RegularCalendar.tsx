@@ -189,7 +189,6 @@ export const RegularCalendar: React.FC = ({ }) => {
               backgroundColor,
               color,
               borderRadius: "6px",
-              border: "none",
             },
           };
         }}

@@ -24,7 +24,7 @@ Simple keyboard nav is okay, as it's built in with most regular HTML elements.
 deeply rely on a online data base, the price of unlimited undo/repo is too expensive. Maybe there is a easy way for Django to redo/undo the newest command, but I'm not sure for now.
 - More time on the UI desing, it's clean now, just clean XD.
 - Performance optimization for large numbers of events.
-- Orgnise the code! Sometimes when I write something, I thought it won'be be resused and didn't write it in a resuable way. And when I found I need to reuse it I have to copy paste for the dependences and nested structure.If I have enough time I definetly will organize the code better.
+- Orgnise the code! Sometimes when I write something, I thought it won'be be resused and didn't write it in a resuable way. And when I found I need to reuse it I have to copy paste for the dependences and nested structure.If I have enough time I de\finetly will organize the code better.
 
 
 ## Before you run it

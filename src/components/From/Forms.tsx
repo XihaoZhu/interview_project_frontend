@@ -124,7 +124,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
     }, [type, resetField])
 
     const typeLabelMap: Record<string, string> = {
-        meeting: "with: ",
+        meeting: "with:",
         event: "location:",
         first_appointment: "interviewee:",
         presentation: "Hold by:",
@@ -247,6 +247,7 @@ export function EventForm({ initialData, onOpenChange }: EventFormProps) {
                         <span>Repeat?</span>
                         <select
                             {...register("repeat_rule")}
+                            disabled={initialData?.id != null}
                             className="pl-2 border rounded px-2 py-1"
                         >
                             <option value="">Never</option>
